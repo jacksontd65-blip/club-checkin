@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Club Check-In</title>
+</head>
+
+<body style="font-family:sans-serif;text-align:center;margin-top:40px;">
+
+<h2>Club Check-In</h2>
+
+<input id="name" placeholder="Enter name">
+<br><br>
+
+<button onclick="checkIn()">Check In</button>
+<button onclick="checkOut()">Check Out</button>
+
+<h3>Present</h3>
+
+<ul id="list"></ul>
+
+<script>
+
+function refresh() {
+fetch('/attendees')
+.then(res => res.json())
+.then(data => {
+let list = document.getElementById("list")
+list.innerHTML = ""
+data.forEach(name=>{
+let li = document.createElement("li")
+li.innerText = name
+list.appendChild(li)
+})
+})
+}
+
+function checkIn() {
+let name = document.getElementById("name").value
+fetch('/checkin',{
+method:'POST',
+headers:{'Content-Type':'application/x-www-form-urlencoded'},
+body:'name='+name
+}).then(refresh)
+}
+
+function checkOut() {
+let name = document.getElementById("name").value
+fetch('/checkout',{
+method:'POST',
+headers:{'Content-Type':'application/x-www-form-urlencoded'},
+body:'name='+name
+}).then(refresh)
+}
+
+setInterval(refresh,3000)
+refresh()
+
+</script>
+
+</body>
+</html>

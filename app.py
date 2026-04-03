@@ -22,21 +22,21 @@ def home():
 
 @app.route("/checkin", methods=["POST"])
 def checkin():
-    check_reset()
+    #check_reset()
     name = request.form.get("name")
     present.add(name)
     return "OK"
 
 @app.route("/checkout", methods=["POST"])
 def checkout():
-    check_reset()
+    #check_reset()
     name = request.form.get("name")
     present.discard(name)
     return "OK"
 
 @app.route("/attendees")
 def attendees():
-    check_reset()
+    #check_reset()
     return jsonify(list(present))
 
 @app.route("/clear", methods=["POST"])

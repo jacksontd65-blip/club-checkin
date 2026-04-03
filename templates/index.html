@@ -1,81 +1,147 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Grassfield RC Field Check-In Test2</title>
+<title>Grassfield RC Club Field Check-In3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+font-family: Arial;
+text-align: center;
+margin-top: 30px;
+}
+
+button {
+padding: 12px;
+margin: 5px;
+font-size: 16px;
+border-radius: 5px;
+border: none;
+}
+
+input {
+padding: 10px;
+font-size: 16px;
+width: 200px;
+}
+
+.checkin {
+background-color: #28a745;
+color: white;
+}
+
+.checkout {
+background-color: #007bff;
+color: white;
+}
+
+.clear {
+background-color: #cc0000;
+color: white;
+}
+
+</style>
+
 </head>
 
-<body style="font-family:sans-serif;text-align:center;margin-top:40px;">
+<body>
 
-<h2>Grassfield RC Field Check-In Test2</h2>
+<h2>Grassfield RC Club Field Check-In3</h2>
 
-<input id="name" placeholder="Enter name">
+<input id="name" placeholder="Enter Name">
+
 <br><br>
 
-<button onclick="checkIn()">Check In</button>
-<button onclick="checkOut()">Check Out</button>
+<button class="checkin" onclick="checkIn()">Check In</button>
+<button class="checkout" onclick="checkOut()">Check Out</button>
 
-<h3>Currently at field:</h3>
+<br><br>
+
+<button class="clear" onclick="clearRoster()">Clear Roster</button>
+
+<h3>Present</h3>
 
 <ul id="list"></ul>
 
 <script>
 
 function refresh() {
+
 fetch('/attendees')
 .then(res => res.json())
 .then(data => {
+
 let list = document.getElementById("list")
 list.innerHTML = ""
-data.forEach(name=>{
+
+data.forEach(name => {
 let li = document.createElement("li")
 li.innerText = name
 list.appendChild(li)
 })
+
 })
+
 }
 
 function checkIn() {
+
 let name = document.getElementById("name").value
-fetch('/checkin',{
-method:'POST',
-headers:{'Content-Type':'application/x-www-form-urlencoded'},
-body:'name='+name
-}).then(refresh)
+
+if (!name) return
+
+fetch('/checkin', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded'
+},
+body: 'name=' + encodeURIComponent(name)
+})
+.then(() => {
+document.getElementById("name").value = ""
+refresh()
+})
+
 }
 
 function checkOut() {
+
 let name = document.getElementById("name").value
-fetch('/checkout',{
-method:'POST',
-headers:{'Content-Type':'application/x-www-form-urlencoded'},
-body:'name='+name
-}).then(refresh)
+
+if (!name) return
+
+fetch('/checkout', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded'
+},
+body: 'name=' + encodeURIComponent(name)
+})
+.then(() => {
+document.getElementById("name").value = ""
+refresh()
+})
+
 }
 
-<!--  
 function clearRoster() {
-if (!confirm("Clear all attendees?")) {
-return
-}
+
+if (!confirm("Clear all attendees?")) return
 
 fetch('/clear', {
 method: 'POST'
 })
 .then(refresh)
 
-}  
-  
-<br><br>
-<button onclick="clearRoster()" 
-style="background:#cc0000;color:white;padding:10px;border:none;border-radius:5px;">
-Clear Roster
-</button>
--->  
-  
-setInterval(refresh,3000)
+}
+
+setInterval(refresh, 3000)
+
 refresh()
 
 </script>
 
 </body>
+
 </html>

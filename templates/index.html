@@ -52,6 +52,24 @@ body:'name='+name
 }).then(refresh)
 }
 
+function clearRoster() {
+if (!confirm("Clear all attendees?")) {
+return
+}
+
+fetch('/clear', {
+method: 'POST'
+})
+.then(refresh)
+
+}  
+  
+<br><br>
+<button onclick="clearRoster()" 
+style="background:#cc0000;color:white;padding:10px;border:none;border-radius:5px;">
+Clear Roster
+</button>
+  
 setInterval(refresh,3000)
 refresh()
 
